@@ -2,14 +2,18 @@
 
 ## システム機能紹介
 
-Focalboard Toolは、Focalboardカンバンを管理・操作するためのツールサービスです。このシステムはRESTful APIセットを提供し、HTTPリクエストを通じてFocalboardカンバンデータの取得、変更、管理を可能にします。本システムは主にFocalboardとMattermostのAPI統合ツールとして機能し、これらのプラットフォームとの相互作用の複雑さを簡素化します。
+Focalboard Toolは、Focalboardカンバンを管理・操作するためのツールサービスです。このシステムは完全なRESTful APIセットを提供し、HTTPリクエストを通じてFocalboardカンバンデータの取得、変更、管理を可能にします。本システムは主にFocalboardとMattermostのAPI統合ツールとして機能し、これらのプラットフォームとの相互作用の複雑さを簡素化します。
 
 ### 主な機能
 
-- 単一のボード情報の取得
-- ボードデータの設定
-- Mattermostとの統合
-- 完全なエラー処理とログ記録のサポート
+- **ボード管理**：単一ボード情報の取得と設定
+- **カード操作**：カードの取得、移動、一括操作
+- **ステータス管理**：ステータス別カードフィルタリング、カードステータスの一括移動
+- **ユーザーステータス**：ユーザーカスタムステータスの更新
+- **関連クエリ**：カード関連のLead情報取得
+- **完全なエラー処理とログ記録**
+- **Swagger APIドキュメント**
+- **Basic Auth認証**
 
 ## システムアーキテクチャ図
 
@@ -122,6 +126,16 @@ Focalboard Toolは、Focalboardカンバンを管理・操作するためのツ�
 └───────────────────────────────────────────┘
 ```
 
+## 技術スタック
+
+- **Go** 1.24.3
+- **Gin** Webフレームワーク
+- **Swagger** APIドキュメント
+- **Zap** 高性能ログライブラリ
+- **Lumberjack** ログローテーション
+- **Focalboard** 公式SDK統合
+- **Mattermost** 公式SDK統合
+
 ## エラー処理
 
 システムには完全なエラー処理メカニズムが実装されており、エラーは2種類に分類されます：
@@ -165,11 +179,17 @@ maxAge = 31
 
 システムはSwaggerドキュメントを統合しており、`/swagger/*` パスにアクセスすることで完全なAPIドキュメントを確認できます。
 
+### 認証
+
+APIはBasic Auth認証を使用し、デフォルトのユーザー名とパスワード：
+- ユーザー名：`admin` / パスワード：`admin`
+- ユーザー名：`user` / パスワード：`user`
+
 ### 主要APIインターフェース
 
-#### 単一のボード情報を取得
+#### 1. 単一のボード情報を取得
 
-```
+```http
 GET /api/v1/focalboard/boards/single
 ```
 
@@ -177,18 +197,106 @@ GET /api/v1/focalboard/boards/single
 - `boardId`: ボードID（必須）
 - `token`: ユーザー認証トークン（必須）
 
-**レスポンス:**
-成功レスポンス(200):
+**レスポンス例:**
 ```json
 {
   "success": true,
   "data": {
-    // ボード情報
+    "id": "board-id",
+    "teamId": "team-id",
+    "title": "ボードタイトル",
+    "cardProperties": [...]
   }
 }
 ```
 
-エラーレスポンス:
+#### 2. ボードの全カード情報を取得
+
+```http
+GET /api/v1/focalboard/boards/cards/allinfo
+```
+
+**パラメータ:**
+- `boardId`: ボードID（必須）
+
+**説明:** 指定されたボード内のすべてのカードを取得し、プロパティと値を含む
+
+#### 3. ボードカードリストを取得
+
+```http
+GET /api/v1/focalboard/boards/cards/list/all
+```
+
+**パラメータ:**
+- `boardId`: ボードID（必須）
+
+**説明:** ボード内のすべてのカードのリストを取得
+
+#### 4. ステータス別カードフィルタリング
+
+```http
+GET /api/v1/focalboard/boards/cards/list/filter/status
+```
+
+**パラメータ:**
+- `boardId`: ボードID（必須）
+- `statusName`: ステータス名（オプション）
+
+**説明:** 指定されたステータスに基づいてボード内のカードをフィルタリング
+
+#### 5. 単一カードの移動
+
+```http
+PUT /api/v1/focalboard/boards/cards/move/one
+```
+
+**パラメータ:**
+- `boardId`: ボードID（必須）
+- `asleadId`: Aslead ID（必須）
+- `statusName`: 移動先ステータス名（必須）
+
+**説明:** 単一のカードを異なるステータス列に移動
+
+#### 6. カードの一括移動
+
+```http
+PUT /api/v1/focalboard/boards/cards/move/batch
+```
+
+**パラメータ:**
+- `boardId`: ボードID（必須）
+- `fromStatusName`: 移動元ステータス名（必須）
+- `toStatusName`: 移動先ステータス名（必須）
+
+**説明:** カードを一括で異なるステータス列に移動
+
+#### 7. ユーザーカスタムステータスの更新
+
+```http
+PATCH /api/v1/focalboard/boards/one/status/patch
+```
+
+**パラメータ:**
+- `asleadId`: Aslead ID（必須）
+- `statusName`: ステータス名（必須）
+- `userToken`: ユーザートークン（必須）
+
+**説明:** ユーザーに新しいカスタムステータスを設定
+
+#### 8. カード関連情報の取得
+
+```http
+GET /api/v1/focalboard/cards/single/asleadinfo
+```
+
+**パラメータ:**
+- `boardId`: ボードID（必須）
+- `cardId`: カードID（必須）
+
+**説明:** カードIDとボードIDを使用して関連するLead情報を取得
+
+### エラーレスポンス形式
+
 ```json
 {
   "success": false,
@@ -196,19 +304,63 @@ GET /api/v1/focalboard/boards/single
     "code": "エラーコード",
     "message": "エラーメッセージ",
     "params": {
-      "request_id": "リクエストID"
+      "request_id": "リクエストID",
+      "timestamp": 1234567890
     }
   }
 }
 ```
 
+## クイックスタート
+
+### インストールと実行
+
+1. **プロジェクトのクローン**
+```bash
+git clone <repository-url>
+cd focalboard-tool
+```
+
+2. **依存関係のインストール**
+```bash
+go mod download
+```
+
+3. **設定の構成**
+   - `configs/application.toml` をコピーし、必要に応じて設定を変更
+   - FocalboardとMattermostサーバーのアドレスが正しいことを確認
+
+4. **サービスの実行**
+```bash
+go run main.go
+```
+
+5. **APIドキュメントへのアクセス**
+   - ブラウザで `http://localhost:8080/swagger/index.html` にアクセス
+
+### 設定ファイル
+
+主要な設定は `configs/application.toml` にあります：
+
+```toml
+[app]
+httpPort = 8080
+version = "0.0.1"
+appName = "focalboard-tool"
+runMode = "debug"
+
+[httpClient.focalboardClient]
+addr = "http://your-focalboard-server"
+apiVersionPath = "/api/v2"
+timeout = "10s"
+
+[httpClient.mattermostClient]
+addr = "http://your-mattermost-server"
+apiVersionPath = "/api/v4"
+timeout = "10s"
+```
+
 ## 開発ガイド
-
-### 環境設定
-
-1. Go 1.16以上をインストール
-2. コードリポジトリをクローン
-3. 依存関係をインストール: `go mod download`
 
 ### プロジェクト構造
 
@@ -216,70 +368,98 @@ GET /api/v1/focalboard/boards/single
 ├── configs/            # 設定ファイルディレクトリ
 │   ├── application.toml # アプリケーション設定
 │   └── errors.yaml     # エラー定義
-├── internal/           # 内部コード
-│   ├── apimodel/       # APIモデル定義
-│   ├── appconst/       # アプリケーション定数
-│   ├── conf/           # 設定処理
-│   ├── dao/            # データアクセス層
-│   ├── middleware/     # HTTPミドルウェア
-│   ├── model/          # 内部モデル
-│   ├── server/         # HTTPサーバー
-│   └── service/        # ビジネスロジック
+├── docs/              # Swaggerドキュメント
+├── internal/          # 内部コード
+│   ├── apimodel/      # APIモデル定義
+│   ├── appconst/      # アプリケーション定数
+│   ├── conf/          # 設定処理
+│   ├── dao/           # データアクセス層
+│   ├── middleware/    # HTTPミドルウェア
+│   ├── model/         # 内部モデル
+│   ├── server/        # HTTPサーバー
+│   └── service/       # ビジネスロジック
 ├── library/           # ツールライブラリ
-│   ├── log/           # ログ処理
-│   └── net/           # ネットワークツール
 ├── logs/              # ログファイル
-├── pkg/               # 公開パッケージ
+├── pkg/               # 公共パッケージ
 ├── main.go            # エントリーファイル
 ├── go.mod             # Goモジュール定義
-└── go.sum             # 依存関係バージョン固定
+└── go.sum             # 依存関係バージョンロック
 ```
 
 ### 新しいAPIの追加
 
-1. `internal/server/http`に新しいハンドラー関数を作成
-2. `route()`関数にルートを追加
-3. `internal/service`にビジネスロジックを実装
-4. データベースアクセスが必要な場合は、`internal/dao`に対応するメソッドを追加
+1. `internal/server/handler` に新しい処理関数を作成
+2. `internal/server/http/focalboard.go` にルートを追加
+3. `internal/service` にビジネスロジックを実装
+4. `internal/dao` にデータアクセスメソッドを追加
+5. Swaggerドキュメントコメントを更新
 
 ### エラー処理
 
 新しいエラータイプの追加：
-1. `configs/errors.yaml`でエラーを定義
-2. `errors`パッケージのメソッドを使用して具体的なエラーを作成
+1. `configs/errors.yaml` でエラーを定義
+2. `pkg/errors` パッケージのメソッドを使用して具体的なエラーを作成
 
 ```go
 // 使用例
 if token == "" {
-    return errors.MissingParam("token")
+    return errors.ConfigMissingParam("token")
 }
 ```
 
-### 設定管理
-
-設定の変更：
-1. `application.toml`に設定項目を追加
-2. `internal/conf/conf.go`に対応する構造体フィールドを追加
-
 ### ログ記録
 
-ログの使用：
 ```go
-import "focalboard-tool/library/log"
+import (
+    "focalboard-tool/library/log"
+    "go.uber.org/zap"
+)
 
-// 異なるレベルのログを記録
-log.Debug("デバッグ情報")
-log.Info("情報ログ")
-log.Warn("警告情報")
-log.Error("エラー情報", zap.Error(err))
+// 情報の記録
+log.Info("操作成功", zap.String("operation", "GetBoard"))
+
+// エラーの記録
+log.Error("操作失敗", zap.Error(err), zap.String("boardId", boardId))
 ```
 
-## デプロイガイド
+## デプロイ
 
-1. アプリケーションをビルド: `go build -o focalboard-tool`
-2. `configs/application.toml`ファイルを設定
-3. アプリケーションを実行: `./focalboard-tool --config=configs/application.toml`
+### Dockerデプロイ
 
-コマンドラインパラメータ:
-- `--config` (`-c`): 設定ファイルパス
-- `--expath` (`-e`): 追加設定ファイルパス 
+1. イメージのビルド：
+```bash
+docker build -t focalboard-tool .
+```
+
+2. コンテナの実行：
+```bash
+docker run -d -p 8080:8080 \
+  -v /path/to/config:/app/configs \
+  -v /path/to/logs:/app/logs \
+  focalboard-tool
+```
+
+### 本番環境
+
+1. 設定ファイルの実行モードを `release` に変更
+2. 適切なログレベルを設定
+3. 適切なタイムアウト時間を設定
+4. ロードバランサーと監視を設定
+
+## 監視とメンテナンス
+
+### ヘルスチェック
+
+システムは基本的なヘルスチェックエンドポイントを提供し、監視ツールを通じてサービス状態を確認できます。
+
+### ログ監視
+
+- ログファイルの場所：`./logs/aa.log`
+- ログローテーションをサポートし、期限切れのログを自動的にクリーンアップ
+- 設定を通じてログ保持ポリシーを調整可能
+
+### パフォーマンス監視
+
+- pprofパフォーマンス分析ツールを統合
+- HTTPインターフェースを通じてパフォーマンス指標を確認
+- リクエスト追跡とパフォーマンス分析をサポート
