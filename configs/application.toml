@@ -1,0 +1,39 @@
+[app]
+httpPort = 8080
+version = "0.0.1"
+appName = "focalboard-tool-prod"
+runMode = "debug"
+readTimeout = "15s"
+writeTimeout = "15s"
+[auth]
+username = "user"
+password = "123"
+
+[boardschema]
+
+cardStatusPropName = "Status"
+cardAsleadIDPropName = "AsleadID"
+cardGroupCategoryPropName = "GroupCategory"
+
+[log]
+logLevel = "debug"
+useLogRotation = true
+[log.logProps]
+
+fileName = "./logs/aa.log"
+maxSize = 1
+maxBackups = 5
+maxAge = 31
+
+[error]
+configFile = "configs/errors.yaml"
+
+[httpClient]
+[httpClient.focalboardClient]
+addr = "http://192.168.50.150"
+apiVersionPath = "/api/v2"
+timeout = "10s"  # HTTP客户端超时时间
+[httpClient.mattermostClient]
+addr = "http://192.168.50.150"
+apiVersionPath = "/api/v4"
+timeout = "10s"  # HTTP客户端超时时间

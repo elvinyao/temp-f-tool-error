@@ -1,0 +1,77 @@
+# エラーメッセージコンフィグ
+# business_error system_error
+
+# 業務エラー - クライアントの動作やビジネスロジックによって引き起こされるエラー
+business_error:
+  - category_name: "validation"
+    description: "パラメータ検証エラー"
+    errors:
+      - name: "invalid_parameter"
+        http_status: 400
+        message_template: "パラメータ %s 無効: %s"
+      - name: "missing_parameter"
+        http_status: 400
+        message_template: "必須パラメータ %s が不足しています"
+      - name: "parameter_format_error"
+        http_status: 400
+        message_template: "パラメータ %s の形式が無効です。期待される形式: %s"
+      - name: "parameter_out_of_range"
+        http_status: 400
+        message_template: "パラメータ %s の値が無効です。有効範囲: [%s, %s]"
+  - category_name: "authentication"
+    description: "認証と認可エラー"
+    errors:
+      - name: "unauthorized"
+        http_status: 401
+        message_template: "このリソースへのアクセス権限がありません。認証情報を確認してください"
+      - name: "forbidden"
+        http_status: 403
+        message_template: "権限が不足しています。この操作を実行できません"
+  - category_name: "resource"
+    description: "リソース関連エラー"
+    errors:
+      - name: "not_found"
+        http_status: 404
+        message_template: "リソース %s が見つかりません"
+      - name: "board_not_found"
+        http_status: 404
+        message_template: "ボード %s が見つかりません"
+      - name: "card_not_found"
+        http_status: 404
+        message_template: "カード %s が見つかりません"
+  - category_name: "rate_limiting"
+    description: "リクエスト制限エラー"
+    errors:
+      - name: "rate_limit_exceeded"
+        http_status: 429
+        message_template: "リクエストの頻度が高すぎます。しばらくしてから再度お試しください"
+      - name: "request_timeout"
+        http_status: 408
+        message_template: "リクエストがタイムアウトしました。しばらくしてから再度お試しください"
+  - category_name: "method"
+    description: "HTTPメソッドエラー"
+    errors:
+      - name: "method_not_allowed"
+        http_status: 405
+        message_template: "サポートされていないHTTPメソッド: %s"
+
+# システムエラー - システム内部の問題によって引き起こされるエラー
+system_error:
+  - category_name: "external_service"
+    description: "外部サービスエラー"
+    errors:
+      - name: "focalboard_api_error"
+        http_status: 500
+        message_template: "Focalboard API の呼び出しに失敗しました: %s"
+      - name: "mattermost_api_error"
+        http_status: 500
+        message_template: "Mattermost API の呼び出しに失敗しました: %s"
+  - category_name: "internal"
+    description: "内部システムエラー"
+    errors:
+      - name: "internal_error"
+        http_status: 500
+        message_template: "サーバー内部エラー"
+# 注記：
+# - business_error: 4xx HTTPステータスコード、ユーザーに対して表示可能、完全なエラー情報を返すことができます
+# - system_error: 5xx HTTPステータスコード、センシティブな情報を非表示にし、一般的なエラー情報のみを返す必要があります

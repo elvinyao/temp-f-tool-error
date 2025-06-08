@@ -1,0 +1,277 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/api/v1/focalboard/boards/cards/allinfo": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Retrieve all cards from a board, including their properties and values.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/boards/cards/list/all": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Obtain a list of cards filtered by a specified status from a board.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/boards/cards/list/filter/status": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get Cards Filtered By Status From Board",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status Name",
+                        "name": "statusName",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/boards/cards/move/batch": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Move multiple cards to different status columns in a batch operation.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status Name",
+                        "name": "fromStatusName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status Name",
+                        "name": "toStatusName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/boards/cards/move/one": {
+            "put": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Move a single card to a different status column.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Aslead Id",
+                        "name": "asleadId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Status Name",
+                        "name": "statusName",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/boards/one/status/patch": {
+            "patch": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Patch a user to new custom status",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "asleadId",
+                        "name": "asleadId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "statusName",
+                        "name": "statusName",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "userToken",
+                        "name": "userToken",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/boards/single": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get a single board by its ID.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/focalboard/cards/single/asleadinfo": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Get the associated LeadId for a single card using the CardId and BoardId.",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Board Id",
+                        "name": "boardId",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Card Id",
+                        "name": "cardId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "focalboard-tool_library_render.JSON": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "msg": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}
