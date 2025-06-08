@@ -9,14 +9,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// @Summary Get a single board by its ID.
-// @Produce json
-// @Param boardId query string true "Board Id"
-// @Param token query string true "User token"
-// @Success 200 {object} middleware.SuccessResponse
-// @Failure 400 {object} middleware.ErrorResponse
-// @Failure 500 {object} middleware.ErrorResponse
-// @Router /api/v1/focalboard/boards/single [get]
+//	@Summary	Get a single board by its ID.
+//	@Produce	json
+//	@Param		boardId	query		string	true	"Board Id"
+//	@Param		token	query		string	true	"User token"
+//	@Success	200		{object}	middleware.SuccessResponse
+//	@Failure	400		{object}	middleware.ErrorResponse
+//	@Failure	500		{object}	middleware.ErrorResponse
+//	@Router		/api/v1/focalboard/boards/single [get]
 func SingleBoard(c *gin.Context) {
 	boardId := c.Query("boardId")
 	token := c.Query("token")

@@ -1,145 +1,52 @@
 definitions:
-  focalboard-tool_library_render.JSON:
+  errors.AppError:
     properties:
       code:
-        type: integer
-      data: {}
-      msg:
+        description: error code, e.g. "invalid_parameter"
         type: string
+      detail:
+        description: detailed error information
+        type: string
+      message:
+        description: user-friendly error message
+        type: string
+      params:
+        additionalProperties: true
+        description: additional parameters
+        type: object
+      system_id:
+        description: system identifier
+        type: string
+      type:
+        allOf:
+        - $ref: '#/definitions/errors.ErrorType'
+        description: 'error type: business_error or system_error'
+    type: object
+  errors.ErrorType:
+    enum:
+    - business_error
+    - system_error
+    type: string
+    x-enum-varnames:
+    - ErrorTypeBusiness
+    - ErrorTypeSystem
+  middleware.ErrorResponse:
+    properties:
+      data: {}
+      error:
+        $ref: '#/definitions/errors.AppError'
+      success:
+        type: boolean
+    type: object
+  middleware.SuccessResponse:
+    properties:
+      data: {}
+      success:
+        type: boolean
     type: object
 info:
   contact: {}
 paths:
-  /api/v1/focalboard/boards/cards/allinfo:
-    get:
-      parameters:
-      - description: Board Id
-        in: query
-        name: boardId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Retrieve all cards from a board, including their properties and values.
-  /api/v1/focalboard/boards/cards/list/all:
-    get:
-      parameters:
-      - description: Board Id
-        in: query
-        name: boardId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Obtain a list of cards filtered by a specified status from a board.
-  /api/v1/focalboard/boards/cards/list/filter/status:
-    get:
-      parameters:
-      - description: Board Id
-        in: query
-        name: boardId
-        required: true
-        type: string
-      - description: Status Name
-        in: query
-        name: statusName
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Get Cards Filtered By Status From Board
-  /api/v1/focalboard/boards/cards/move/batch:
-    put:
-      parameters:
-      - description: Board Id
-        in: query
-        name: boardId
-        required: true
-        type: string
-      - description: Status Name
-        in: query
-        name: fromStatusName
-        required: true
-        type: string
-      - description: Status Name
-        in: query
-        name: toStatusName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Move multiple cards to different status columns in a batch operation.
-  /api/v1/focalboard/boards/cards/move/one:
-    put:
-      parameters:
-      - description: Board Id
-        in: query
-        name: boardId
-        required: true
-        type: string
-      - description: Aslead Id
-        in: query
-        name: asleadId
-        required: true
-        type: string
-      - description: Status Name
-        in: query
-        name: statusName
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Move a single card to a different status column.
-  /api/v1/focalboard/boards/one/status/patch:
-    patch:
-      parameters:
-      - description: asleadId
-        in: query
-        name: asleadId
-        required: true
-        type: string
-      - description: statusName
-        in: query
-        name: statusName
-        required: true
-        type: string
-      - description: userToken
-        in: query
-        name: userToken
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Patch a user to new custom status
   /api/v1/focalboard/boards/single:
     get:
       parameters:
@@ -148,33 +55,25 @@ paths:
         name: boardId
         required: true
         type: string
+      - description: User token
+        in: query
+        name: token
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
+            $ref: '#/definitions/middleware.SuccessResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/middleware.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/middleware.ErrorResponse'
       summary: Get a single board by its ID.
-  /api/v1/focalboard/cards/single/asleadinfo:
-    get:
-      parameters:
-      - description: Board Id
-        in: query
-        name: boardId
-        required: true
-        type: string
-      - description: Card Id
-        in: query
-        name: cardId
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/focalboard-tool_library_render.JSON'
-      summary: Get the associated LeadId for a single card using the CardId and BoardId.
 swagger: "2.0"

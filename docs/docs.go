@@ -15,204 +15,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/focalboard/boards/cards/allinfo": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Retrieve all cards from a board, including their properties and values.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Board Id",
-                        "name": "boardId",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/focalboard/boards/cards/list/all": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Obtain a list of cards filtered by a specified status from a board.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Board Id",
-                        "name": "boardId",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/focalboard/boards/cards/list/filter/status": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get Cards Filtered By Status From Board",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Board Id",
-                        "name": "boardId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Status Name",
-                        "name": "statusName",
-                        "in": "query"
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/focalboard/boards/cards/move/batch": {
-            "put": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Move multiple cards to different status columns in a batch operation.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Board Id",
-                        "name": "boardId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Status Name",
-                        "name": "fromStatusName",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Status Name",
-                        "name": "toStatusName",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/focalboard/boards/cards/move/one": {
-            "put": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Move a single card to a different status column.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Board Id",
-                        "name": "boardId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Aslead Id",
-                        "name": "asleadId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Status Name",
-                        "name": "statusName",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/focalboard/boards/one/status/patch": {
-            "patch": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Patch a user to new custom status",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "asleadId",
-                        "name": "asleadId",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "statusName",
-                        "name": "statusName",
-                        "in": "query",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "userToken",
-                        "name": "userToken",
-                        "in": "query",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
         "/api/v1/focalboard/boards/single": {
             "get": {
                 "produces": [
@@ -226,36 +28,11 @@ const docTemplate = `{
                         "name": "boardId",
                         "in": "query",
                         "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/focalboard/cards/single/asleadinfo": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "summary": "Get the associated LeadId for a single card using the CardId and BoardId.",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Board Id",
-                        "name": "boardId",
-                        "in": "query",
-                        "required": true
                     },
                     {
                         "type": "string",
-                        "description": "Card Id",
-                        "name": "cardId",
+                        "description": "User token",
+                        "name": "token",
                         "in": "query",
                         "required": true
                     }
@@ -264,7 +41,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/focalboard-tool_library_render.JSON"
+                            "$ref": "#/definitions/middleware.SuccessResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/middleware.ErrorResponse"
                         }
                     }
                 }
@@ -272,15 +61,69 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "focalboard-tool_library_render.JSON": {
+        "errors.AppError": {
             "type": "object",
             "properties": {
                 "code": {
-                    "type": "integer"
-                },
-                "data": {},
-                "msg": {
+                    "description": "error code, e.g. \"invalid_parameter\"",
                     "type": "string"
+                },
+                "detail": {
+                    "description": "detailed error information",
+                    "type": "string"
+                },
+                "message": {
+                    "description": "user-friendly error message",
+                    "type": "string"
+                },
+                "params": {
+                    "description": "additional parameters",
+                    "type": "object",
+                    "additionalProperties": true
+                },
+                "system_id": {
+                    "description": "system identifier",
+                    "type": "string"
+                },
+                "type": {
+                    "description": "error type: business_error or system_error",
+                    "allOf": [
+                        {
+                            "$ref": "#/definitions/errors.ErrorType"
+                        }
+                    ]
+                }
+            }
+        },
+        "errors.ErrorType": {
+            "type": "string",
+            "enum": [
+                "business_error",
+                "system_error"
+            ],
+            "x-enum-varnames": [
+                "ErrorTypeBusiness",
+                "ErrorTypeSystem"
+            ]
+        },
+        "middleware.ErrorResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "error": {
+                    "$ref": "#/definitions/errors.AppError"
+                },
+                "success": {
+                    "type": "boolean"
+                }
+            }
+        },
+        "middleware.SuccessResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "success": {
+                    "type": "boolean"
                 }
             }
         }
