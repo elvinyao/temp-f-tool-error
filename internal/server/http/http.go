@@ -33,7 +33,9 @@ func (r apiroutes) Run(addr ...string) error {
 
 // New init
 func New(c *conf.Config, s *service.Service) (httpSrv *http.Server) {
-	gin.SetMode(gin.ReleaseMode)
+	// 根据配置文件设置Gin运行模式
+	setGinMode(c.App.RunMode)
+
 	routerRes := route()
 	readTimeout := conf.Conf.App.ReadTimeout
 	writeTimeout := conf.Conf.App.WriteTimeout
@@ -52,6 +54,7 @@ func New(c *conf.Config, s *service.Service) (httpSrv *http.Server) {
 		// service connections
 		log.Info("HTTP服务器启动中...",
 			zap.String("address", endPoint),
+			zap.String("run_mode", gin.Mode()),
 			zap.Duration("read_timeout", time.Duration(readTimeout)),
 			zap.Duration("write_timeout", time.Duration(writeTimeout)))
 
@@ -65,6 +68,26 @@ func New(c *conf.Config, s *service.Service) (httpSrv *http.Server) {
 		}
 	}()
 	return
+}
+
+// setGinMode 根据配置设置Gin运行模式
+func setGinMode(runMode string) {
+	switch runMode {
+	case "debug":
+		gin.SetMode(gin.DebugMode)
+	case "release":
+		gin.SetMode(gin.ReleaseMode)
+	case "test":
+		gin.SetMode(gin.TestMode)
+	default:
+		log.Warn("unknown run mode, use default release mode",
+			zap.String("runMode", runMode))
+		gin.SetMode(gin.ReleaseMode)
+	}
+
+	log.Info("Gin run mode set",
+		zap.String("configured_mode", runMode),
+		zap.String("actual_mode", gin.Mode()))
 }
 
 func route() apiroutes {
